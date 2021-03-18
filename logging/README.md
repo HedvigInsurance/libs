@@ -51,3 +51,6 @@ com.hedvig.MyClass-aop : Executed: MyClass.howdyHo(..), returned: 'Yo!', duratio
 ```
 The method parameters and response is masked for fields tagged with the `@Masked` annotation.
 
+## Maven
+
+To use this lib to your project, add following dependency to your `pom.xml`:

@@ -1,8 +1,11 @@
 # Hedvig [GitHub Packages](https://github.com/features/package-registry) repo for shared libs
 
-This is the new "Hedvig Maven Central" replacing Bintray for shared libs at Hedvig.
+This repo contains shared Hedvig libs.
 
-Published packages can be found [here](https://github.com/orgs/HedvigInsurance/packages).
+Uploaded libs can be found [here](https://github.com/orgs/HedvigInsurance/packages).
+
+Current libs:
+- [logging](https://github.com/HedvigInsurance/libs/tree/main/logging)
 
 ## Add dependency
 
@@ -11,7 +14,7 @@ To include any lib from this repo into your project you have to do three things:
 1. Add the lib as dependency in your `pom.mxl`.
 ```
 <dependency>
-    <groupId>com.hedvig</groupId>
+    <groupId>com.hedvig.libs</groupId>
     <artifactId>[lib-name]</artifactId>
     <version>[lib-version]</version>
 </dependency>
