@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.hedvig.libs</groupId>
+    <artifactId>parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+
+    <name>libs</name>
+    <url>https://github.com/HedvigInsurance/libs</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <kotlin.version>1.4.10</kotlin.version>
+        <spring.version>2.1.14.RELEASE</spring.version>
+        <junit-jupiter.version>5.3.2</junit-jupiter.version>
+        <github.global.server>github</github.global.server>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Hedvig Maven Packages</name>
+            <url>https://maven.pkg.github.com/HedvigInsurance/libs</url>
+        </repository>
+    </distributionManagement>
+
+    <modules>
+        <module>logging</module>
+    </modules>
+
+</project>
