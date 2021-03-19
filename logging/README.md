@@ -17,7 +17,7 @@ fun getBook(@Mdc @PathVariable bookId: UUID): Book {
 } // after returning, the MDC will be restored to its prior state
 ```
 
-It can also be declared on nested types:
+It can also be declared on nested values of types:
 ```kotlin
 data class Book(
     @Mdc val market: String 

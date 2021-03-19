@@ -4,6 +4,7 @@ package com.hedvig.libs.logging.mdc
  * This can be attached to method parameters or class properties to place it inside [org.slf4j.MDC].
  * It must be combined with a [MdcScope] on the method.
  *
+ * Currently only supports tagging [String], [Int] and [java.util.UUID].
  *
  *     @GetMapping("/books/{bookId}")
  *     @MdcScope
