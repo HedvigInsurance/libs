@@ -2,6 +2,7 @@ package com.hedvig.libs.logging.mdc
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.slf4j.MDC
@@ -23,16 +24,37 @@ class MdcScopeAspectTest {
     private lateinit var worker: SomeWorker
 
     @Test
-    fun `test mdc propagates`() {
+    fun `test mdc is set`() {
         val uuid = UUID.randomUUID()
-        worker.doWork(uuid)
+        worker.withContext(taskId = uuid) {
+            assertThat(MDC.get("taskId")).isEqualTo(uuid.toString())
+        }
+    }
+
+    @Test
+    fun `test mdc is unset afterwards`() {
+        val uuid = UUID.randomUUID()
+        worker.withContext(taskId = uuid) {
+        }
+        assertThat(MDC.get("taskId")).isNull()
+    }
+
+    @Test
+    fun `test mdc is restored afterwards`() {
+        MDC.put("taskId", "previous value")
+        val uuid = UUID.randomUUID()
+        worker.withContext(taskId = uuid) {
+            assertThat(MDC.get("taskId")).isEqualTo(uuid.toString())
+        }
+        assertThat(MDC.get("taskId")).isEqualTo("previous value")
+        MDC.remove("taskId")
     }
 
     @Service
     internal class SomeWorker {
         @MdcScope
-        fun doWork(@Mdc taskId: UUID) {
-            assertThat(MDC.get("taskId")).isEqualTo(taskId.toString())
+        fun withContext(@Mdc taskId: UUID, test: () -> Unit) {
+            test()
         }
     }
 }

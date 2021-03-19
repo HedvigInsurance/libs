@@ -4,10 +4,13 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.slf4j.MDC
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 
 @Aspect
 @Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
 class MdcScopeAspect {
 
     @Around("@annotation(com.hedvig.libs.logging.mdc.MdcScope)")

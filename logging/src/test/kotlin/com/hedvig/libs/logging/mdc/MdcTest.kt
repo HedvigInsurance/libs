@@ -4,6 +4,8 @@ import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.lang.IllegalArgumentException
 import java.util.*
 
 internal class MdcTest {
@@ -46,7 +48,6 @@ internal class MdcTest {
 
     @Test
     fun `nested mdc value`() {
-        val uuid = UUID.randomUUID()
         val mdc = extractMdcProperties(this::singleRequestObject, arrayOf(Request("1234")))
 
         assertThat(mdc).isEqualTo(mapOf("targetId" to "1234"))
@@ -59,6 +60,13 @@ internal class MdcTest {
         assertThat(mdc).isEqualTo(mapOf("age" to "17"))
     }
 
+    @Test
+    fun `test unsupported type`() {
+        assertThrows<IllegalArgumentException> {
+            extractMdcProperties(this::misstaggedParameter, arrayOf(Request("1234")))
+        }
+    }
+
     private fun emptyMethod() {}
     private fun singleMdcValue(@Mdc firstName: String) {}
     private fun singleMdcValueWithCustomName(@Mdc("first_name") firstName: String) {}
@@ -66,6 +74,7 @@ internal class MdcTest {
     private fun singleMdcAmongNonMdc(age: Int, @Mdc id: UUID, name: String) {}
     private fun singleIntValue(@Mdc age: Int) {}
     private fun singleRequestObject(request: Request) {}
+    private fun misstaggedParameter(@Mdc request: Request) {}
 
     data class Request(
         @Mdc val targetId: String

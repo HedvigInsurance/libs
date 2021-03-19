@@ -15,6 +15,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 
 import ch.qos.logback.core.read.ListAppender
 import com.hedvig.libs.logging.masking.Masked
+import com.hedvig.libs.logging.mdc.Mdc
+import com.hedvig.libs.logging.mdc.MdcScope
+import com.hedvig.libs.logging.mdc.MdcScopeAspect
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -23,7 +26,7 @@ import org.slf4j.LoggerFactory
 import java.lang.IllegalArgumentException
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes= [LogCallAspect::class])
+@SpringBootTest(classes= [LogCallAspect::class, MdcScopeAspect::class])
 @ComponentScan("com.hedvig.libs.logging.calls")
 @EnableAspectJAutoProxy
 class LogCallTest {
@@ -151,6 +154,18 @@ class LogCallTest {
         }
     }
 
+    @Test
+    fun testMdcAnnoationsAreIncluded() {
+
+        testService.logIncludingMdc(context = "abc")
+
+        with(logWatcher!!) {
+            assertThat(list.size).isEqualTo(2)
+            assertThat(list[0].mdcPropertyMap).containsEntry("context", "abc")
+
+            assertThat(list[1].mdcPropertyMap).containsEntry("context", "abc")
+        }
+    }
 }
 
 
@@ -185,6 +200,10 @@ class TestServiceX {
         throw IllegalArgumentException("Testing")
     }
 
+    @MdcScope
+    @LogCall
+    fun logIncludingMdc(@Mdc context: String) {
+    }
 }
 
 data class PojoA (
