@@ -1,6 +1,6 @@
-package com.hedvig.logging.calls
+package com.hedvig.libs.logging.calls
 
-import com.hedvig.logging.masking.toMaskedString
+import com.hedvig.libs.logging.masking.toMaskedString
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 class LogCallAspect {
 
     @Suppress("TooGenericExceptionCaught")
-    @Around("@annotation(com.hedvig.logging.calls.LogCall)")
+    @Around("@annotation(com.hedvig.libs.logging.calls.LogCall)")
     fun logExecutionTime(joinPoint: ProceedingJoinPoint): Any? {
 
         val start = System.currentTimeMillis()

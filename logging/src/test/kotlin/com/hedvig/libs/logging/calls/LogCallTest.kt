@@ -1,4 +1,4 @@
-package com.hedvig.logging.calls
+package com.hedvig.libs.logging.calls
 
 import ch.qos.logback.classic.Logger
 import org.junit.Test
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy
 import ch.qos.logback.classic.spi.ILoggingEvent
 
 import ch.qos.logback.core.read.ListAppender
-import com.hedvig.logging.masking.Masked
+import com.hedvig.libs.logging.masking.Masked
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -24,7 +24,7 @@ import java.lang.IllegalArgumentException
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes= [LogCallAspect::class])
-@ComponentScan(basePackages = ["com.hedvig.logging.calls"])
+@ComponentScan("com.hedvig.libs.logging.calls")
 @EnableAspectJAutoProxy
 class LogCallTest {
 

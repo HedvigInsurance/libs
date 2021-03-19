@@ -1,4 +1,4 @@
-package com.hedvig.logging.masking
+package com.hedvig.libs.logging.masking
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
