@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
+import java.util.*
 
 internal class MdcTest {
 
@@ -36,6 +37,22 @@ internal class MdcTest {
     }
 
     @Test
+    fun `one mdc value - but others are not mdc`() {
+        val uuid = UUID.randomUUID()
+        val mdc = extractMdcProperties(this::singleMdcAmongNonMdc, arrayOf(10, uuid, "Testing"))
+
+        assertThat(mdc).isEqualTo(mapOf("id" to uuid.toString()))
+    }
+
+    @Test
+    fun `nested mdc value`() {
+        val uuid = UUID.randomUUID()
+        val mdc = extractMdcProperties(this::singleRequestObject, arrayOf(Request("1234")))
+
+        assertThat(mdc).isEqualTo(mapOf("targetId" to "1234"))
+    }
+
+    @Test
     fun `mdc is stringified`() {
         val mdc = extractMdcProperties(this::singleIntValue, arrayOf(17))
 
@@ -46,5 +63,11 @@ internal class MdcTest {
     private fun singleMdcValue(@Mdc firstName: String) {}
     private fun singleMdcValueWithCustomName(@Mdc("first_name") firstName: String) {}
     private fun twoMdcValues(@Mdc firstName: String, @Mdc lastName: String) {}
+    private fun singleMdcAmongNonMdc(age: Int, @Mdc id: UUID, name: String) {}
     private fun singleIntValue(@Mdc age: Int) {}
+    private fun singleRequestObject(request: Request) {}
+
+    data class Request(
+        @Mdc val targetId: String
+    )
 }

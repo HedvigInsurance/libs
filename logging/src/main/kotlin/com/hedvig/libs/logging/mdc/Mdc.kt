@@ -2,8 +2,8 @@ package com.hedvig.libs.logging.mdc
 
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature
-import java.lang.reflect.Method
 import kotlin.reflect.KFunction
+import kotlin.reflect.full.valueParameters
 import kotlin.reflect.jvm.kotlinFunction
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
@@ -14,15 +14,15 @@ annotation class Mdc(
 
 internal fun ProceedingJoinPoint.extractMdcProperties(): Map<String, String> {
     val signature = (signature as? MethodSignature) ?: return emptyMap()
-    val kFunction = signature.method.kotlinFunction ?: return emptyMap()
-    return extractMdcProperties(kFunction, args)
+    val method = signature.method.kotlinFunction ?: return emptyMap()
+    return extractMdcProperties(method, args)
 }
 
 internal fun extractMdcProperties(method: KFunction<*>, args: Array<Any>): Map<String, String> {
     val mdc = mutableMapOf<String, String>()
     args.indices.forEach { index ->
         val arg = args[index]
-        val parameter = method.parameters[index]
+        val parameter = method.valueParameters[index]
         parameter.annotations.filterIsInstance<Mdc>().firstOrNull()?.let { annotation ->
             val property = if (annotation.name.isNotBlank()) annotation.name else parameter.name ?: "arg$index"
             mdc[property] = arg.toString()
