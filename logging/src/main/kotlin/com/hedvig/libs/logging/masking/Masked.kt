@@ -5,7 +5,7 @@ import java.util.LinkedList
 
 @Target(AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Masked()
+annotation class Masked
 
 fun Any?.toMaskedString(): String = when (this) {
     is Collection<*> -> this.toMaskedString()
