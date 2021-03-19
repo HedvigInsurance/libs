@@ -8,6 +8,9 @@ import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 
+/**
+ * The aspect that actually extracts MDC values using the [Mdc] and [MdcScope] annotations.
+ */
 @Aspect
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
