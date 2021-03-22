@@ -42,12 +42,12 @@ class LogCallTest {
     @Autowired
     lateinit var testService: TestServiceX
 
-    var logWatcher: ListAppender<ILoggingEvent>? = null
+    private lateinit var logWatcher: ListAppender<ILoggingEvent>
 
     @Before
     fun setup() {
         logWatcher = ListAppender()
-        logWatcher!!.start()
+        logWatcher.start()
         (LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME) as Logger).addAppender(logWatcher)
     }
 
@@ -61,7 +61,7 @@ class LogCallTest {
 
         testService.logNothing("asd")
 
-        assertThat(logWatcher!!.list).isEmpty()
+        assertThat(logWatcher.list).isEmpty()
     }
 
     @Test
@@ -69,7 +69,7 @@ class LogCallTest {
 
         testService.logCallNoParamReturningUnit()
 
-        with(logWatcher!!) {
+        with(logWatcher) {
             assertThat(list.size).isEqualTo(2)
             assertThat(list[0].level.toString()).isEqualTo("INFO")
             assertThat(list[0].loggerName).isEqualTo(TestServiceX::class.java.name + "-aop")
@@ -86,7 +86,7 @@ class LogCallTest {
 
         testService.logCallWithParamsReturningString("abc", 10)
 
-        with(logWatcher!!) {
+        with(logWatcher) {
             assertThat(list.size).isEqualTo(2)
             assertThat(list[0].level.toString()).isEqualTo("INFO")
             assertThat(list[0].loggerName).isEqualTo(TestServiceX::class.java.name + "-aop")
@@ -103,7 +103,7 @@ class LogCallTest {
 
         testService.logCallWithParamsReturningNullString("abc", 10)
 
-        with(logWatcher!!) {
+        with(logWatcher) {
             assertThat(list.size).isEqualTo(2)
             assertThat(list[0].level.toString()).isEqualTo("INFO")
             assertThat(list[0].loggerName).isEqualTo(TestServiceX::class.java.name + "-aop")
@@ -123,7 +123,7 @@ class LogCallTest {
 
         testService.logCallWithPojoParamsReturningPojo(pojoA)
 
-        with(logWatcher!!) {
+        with(logWatcher) {
             assertThat(list.size).isEqualTo(2)
             assertThat(list[0].level.toString()).isEqualTo("INFO")
             assertThat(list[0].loggerName).isEqualTo(TestServiceX::class.java.name + "-aop")
@@ -142,7 +142,7 @@ class LogCallTest {
            testService.logCallThrowingException()
         }
 
-        with(logWatcher!!) {
+        with(logWatcher) {
             assertThat(list.size).isEqualTo(2)
             assertThat(list[0].level.toString()).isEqualTo("INFO")
             assertThat(list[0].loggerName).isEqualTo(TestServiceX::class.java.name + "-aop")
@@ -159,7 +159,7 @@ class LogCallTest {
 
         testService.logIncludingMdc(context = "abc")
 
-        with(logWatcher!!) {
+        with(logWatcher) {
             assertThat(list.size).isEqualTo(2)
             assertThat(list[0].mdcPropertyMap).containsEntry("hedvig.context", "abc")
 
