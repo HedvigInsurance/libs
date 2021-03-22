@@ -15,7 +15,10 @@ import org.springframework.test.context.junit4.SpringRunner
 import java.util.*
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(classes = [MdcScopeAspect::class])
+@SpringBootTest(
+    classes = [MdcScopeAspect::class],
+    properties = ["hedvig.logging.mdc.prefix=test"]
+)
 @ComponentScan("com.hedvig.libs.logging.mdc")
 @EnableAspectJAutoProxy
 class MdcScopeAspectTest {
@@ -27,7 +30,7 @@ class MdcScopeAspectTest {
     fun `test mdc is set`() {
         val uuid = UUID.randomUUID()
         worker.withContext(taskId = uuid) {
-            assertThat(MDC.get("taskId")).isEqualTo(uuid.toString())
+            assertThat(MDC.get("test.taskId")).isEqualTo(uuid.toString())
         }
     }
 
@@ -36,18 +39,18 @@ class MdcScopeAspectTest {
         val uuid = UUID.randomUUID()
         worker.withContext(taskId = uuid) {
         }
-        assertThat(MDC.get("taskId")).isNull()
+        assertThat(MDC.get("test.taskId")).isNull()
     }
 
     @Test
     fun `test mdc is restored afterwards`() {
-        MDC.put("taskId", "previous value")
+        MDC.put("test.taskId", "previous value")
         val uuid = UUID.randomUUID()
         worker.withContext(taskId = uuid) {
-            assertThat(MDC.get("taskId")).isEqualTo(uuid.toString())
+            assertThat(MDC.get("test.taskId")).isEqualTo(uuid.toString())
         }
-        assertThat(MDC.get("taskId")).isEqualTo("previous value")
-        MDC.remove("taskId")
+        assertThat(MDC.get("test.taskId")).isEqualTo("previous value")
+        MDC.remove("test.taskId")
     }
 
     @Service
