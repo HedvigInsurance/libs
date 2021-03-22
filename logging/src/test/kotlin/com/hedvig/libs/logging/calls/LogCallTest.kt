@@ -161,9 +161,9 @@ class LogCallTest {
 
         with(logWatcher!!) {
             assertThat(list.size).isEqualTo(2)
-            assertThat(list[0].mdcPropertyMap).containsEntry("context", "abc")
+            assertThat(list[0].mdcPropertyMap).containsEntry("hedvig.context", "abc")
 
-            assertThat(list[1].mdcPropertyMap).containsEntry("context", "abc")
+            assertThat(list[1].mdcPropertyMap).containsEntry("hedvig.context", "abc")
         }
     }
 }
