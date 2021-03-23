@@ -31,14 +31,6 @@ import java.lang.IllegalArgumentException
 @EnableAspectJAutoProxy
 class LogCallTest {
 
-    @TestConfiguration
-    internal class TestServiceImplTestContextConfiguration {
-        @Bean
-        fun testService(): TestServiceX {
-            return TestServiceX()
-        }
-    }
-
     @Autowired
     lateinit var testService: TestServiceX
 
