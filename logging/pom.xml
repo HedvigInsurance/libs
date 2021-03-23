@@ -45,12 +45,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>${junit-jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.willowtreeapps.assertk</groupId>
             <artifactId>assertk-jvm</artifactId>
             <version>0.22</version>

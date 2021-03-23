@@ -2,7 +2,7 @@ package com.hedvig.libs.logging.masking
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
 class MaskedTest {
