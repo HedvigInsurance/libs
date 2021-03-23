@@ -29,9 +29,11 @@ class MdcScopeAspect(
             "$prefix.${it.key}"
         }
         val existing = pushMdc(newContext)
-        val result = joinPoint.proceed()
-        restoreMdc(newContext, existing)
-        return result
+        try {
+            return joinPoint.proceed()
+        } finally {
+            restoreMdc(newContext, existing)
+        }
     }
 
     private fun pushMdc(newContext: Map<String, String>): Map<String, String> {
