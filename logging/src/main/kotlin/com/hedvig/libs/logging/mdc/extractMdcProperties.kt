@@ -37,7 +37,7 @@ private fun extractMdcPropertiesRecursively(
     val mdcTag = element.findAnnotation<Mdc>()
     when {
         // String, Int and UUIDs are supported @Mdc types
-        value is String || value is Int || value is UUID -> {
+        value is String || value is Number || value is UUID -> {
             if (mdcTag != null) {
                 val propertyName = when {
                     mdcTag.name.isNotEmpty() -> mdcTag.name
@@ -50,7 +50,7 @@ private fun extractMdcPropertiesRecursively(
         }
         value.javaClass.packageName.startsWith("com.hedvig") -> {
             if (mdcTag != null) {
-                throw IllegalArgumentException("@Mdc can only target String, Int or UUID")
+                throw IllegalArgumentException("@Mdc can only target String, Number or UUID")
             }
 
             @Suppress("UNCHECKED_CAST") // Needed to make compiler happy
