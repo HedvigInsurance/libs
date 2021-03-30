@@ -22,7 +22,7 @@ fun Map<*, *>?.toMaskedString(): String =
 
 private fun reflectionToString(obj: Any): String {
 
-    if (!obj.javaClass.packageName.startsWith("com.hedvig"))
+    if (!isWhitelisted(obj.javaClass))
         return obj.toString()
 
     if (obj.javaClass.isEnum())
@@ -31,7 +31,7 @@ private fun reflectionToString(obj: Any): String {
     val s = LinkedList<String>()
     var clazz: Class<in Any>? = obj.javaClass
 
-    while (clazz != null && clazz.packageName.startsWith("com.hedvig")) {
+    while (clazz != null && isWhitelisted(clazz)) {
 
         for (prop in clazz.declaredFields.filterNot { Modifier.isStatic(it.modifiers) }) {
 
@@ -47,3 +47,16 @@ private fun reflectionToString(obj: Any): String {
     }
     return "${obj.javaClass.simpleName}(${s.joinToString(", ")})"
 }
+
+private fun isWhitelisted(clazz: Class<in Any>): Boolean {
+    if (clazz.packageName.startsWith("com.hedvig")) {
+        return true
+    }
+
+    return clazz.name in whitelist
+}
+
+private val whitelist = setOf(
+    "org.springframework.http.ResponseEntity",
+    "org.springframework.http.HttpEntity"
+)
