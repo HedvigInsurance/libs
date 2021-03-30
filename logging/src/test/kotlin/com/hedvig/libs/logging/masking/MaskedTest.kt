@@ -3,6 +3,8 @@ package com.hedvig.libs.logging.masking
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.Test
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import java.math.BigDecimal
 
 class MaskedTest {
@@ -249,5 +251,22 @@ class MaskedTest {
 
         val d = BigDecimal(12)
         assertThat(d.toMaskedString()).isEqualTo(d.toString())
+    }
+
+    @Test
+    fun testResponseEntity() {
+        data class Child(
+            val a: String,
+            val b: String,
+            @Masked val c: String,
+        )
+
+        val child = Child("a", "2", "masked")
+        val responseEntity = ResponseEntity<Child>(child, HttpStatus.OK)
+
+        assertThat(responseEntity.toMaskedString()).isEqualTo("ResponseEntity(status=200 OK, headers={}, body=Child(a=a, b=2, c=***))")
+
+        val c = ResponseEntity(null, HttpStatus.OK)
+        assertThat(c.toMaskedString()).isEqualTo("ResponseEntity(status=200 OK, headers={}, body=null)")
     }
 }
