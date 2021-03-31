@@ -28,22 +28,20 @@ internal fun extractMdcProperties(method: KFunction<*>, args: Array<Any>): Map<S
 
 private fun extractMdcPropertiesRecursively(
     value: Any,
-    element: KAnnotatedElement,
+    parameter: KParameter,
     result: MutableMap<String, String>
 ) {
     // Don't try to do anything to lambdas
     if (value is Function<*>) return
 
-    val mdcTag = element.findAnnotation<Mdc>()
+    val mdcTag = parameter.findAnnotation<Mdc>()
     when {
         // String, Int and UUIDs are supported @Mdc types
         value is String || value is Number || value is UUID -> {
             if (mdcTag != null) {
                 val propertyName = when {
                     mdcTag.name.isNotEmpty() -> mdcTag.name
-                    element is KParameter -> element.name ?: throw IllegalArgumentException("Parameter has no name: $element")
-                    element is KCallable<*> -> element.name
-                    else -> throw IllegalArgumentException("Unsupported element type: $element")
+                    else -> parameter.name ?: throw IllegalArgumentException("Parameter has no name: $parameter")
                 }
                 result[propertyName] = value.toString()
             }
@@ -69,11 +67,11 @@ private fun extractMdcPropertiesRecursively(
                 param to property
             }
 
-            for ((parameter, property) in paramPropertyMatch) {
+            for ((param, property) in paramPropertyMatch) {
                 val nestedValue = property.get(value) ?: continue
                 extractMdcPropertiesRecursively(
                     nestedValue,
-                    parameter,
+                    param,
                     result
                 )
             }
