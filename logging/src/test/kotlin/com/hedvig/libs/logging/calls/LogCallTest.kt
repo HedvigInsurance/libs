@@ -1,12 +1,9 @@
 package com.hedvig.libs.logging.calls
 
 import ch.qos.logback.classic.Logger
-import org.junit.Test
-import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Service
-import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
@@ -15,40 +12,38 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 
 import ch.qos.logback.core.read.ListAppender
 import com.hedvig.libs.logging.masking.Masked
+import com.hedvig.libs.logging.mdc.Mdc
+import com.hedvig.libs.logging.mdc.MdcScope
+import com.hedvig.libs.logging.mdc.MdcScopeAspect
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.After
-import org.junit.Before
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.LoggerFactory
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.lang.IllegalArgumentException
 
-@RunWith(SpringRunner::class)
-@SpringBootTest(classes= [LogCallAspect::class])
+@ExtendWith(SpringExtension::class)
+@SpringBootTest(classes = [LogCallAspect::class, MdcScopeAspect::class])
 @ComponentScan("com.hedvig.libs.logging.calls")
 @EnableAspectJAutoProxy
 class LogCallTest {
 
-    @TestConfiguration
-    internal class TestServiceImplTestContextConfiguration {
-        @Bean
-        fun testService(): TestServiceX {
-            return TestServiceX()
-        }
-    }
-
     @Autowired
     lateinit var testService: TestServiceX
 
-    var logWatcher: ListAppender<ILoggingEvent>? = null
+    private lateinit var logWatcher: ListAppender<ILoggingEvent>
 
-    @Before
+    @BeforeEach
     fun setup() {
         logWatcher = ListAppender()
-        logWatcher!!.start()
+        logWatcher.start()
         (LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME) as Logger).addAppender(logWatcher)
     }
 
-    @After
+    @AfterEach
     fun cleanup() {
         (LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME) as Logger).detachAppender(logWatcher)
     }
@@ -58,7 +53,7 @@ class LogCallTest {
 
         testService.logNothing("asd")
 
-        assertThat(logWatcher!!.list).isEmpty()
+        assertThat(logWatcher.list).isEmpty()
     }
 
     @Test
@@ -66,7 +61,7 @@ class LogCallTest {
 
         testService.logCallNoParamReturningUnit()
 
-        with(logWatcher!!) {
+        with(logWatcher) {
             assertThat(list.size).isEqualTo(2)
             assertThat(list[0].level.toString()).isEqualTo("INFO")
             assertThat(list[0].loggerName).isEqualTo(TestServiceX::class.java.name + "-aop")
@@ -83,7 +78,7 @@ class LogCallTest {
 
         testService.logCallWithParamsReturningString("abc", 10)
 
-        with(logWatcher!!) {
+        with(logWatcher) {
             assertThat(list.size).isEqualTo(2)
             assertThat(list[0].level.toString()).isEqualTo("INFO")
             assertThat(list[0].loggerName).isEqualTo(TestServiceX::class.java.name + "-aop")
@@ -100,7 +95,7 @@ class LogCallTest {
 
         testService.logCallWithParamsReturningNullString("abc", 10)
 
-        with(logWatcher!!) {
+        with(logWatcher) {
             assertThat(list.size).isEqualTo(2)
             assertThat(list[0].level.toString()).isEqualTo("INFO")
             assertThat(list[0].loggerName).isEqualTo(TestServiceX::class.java.name + "-aop")
@@ -120,7 +115,7 @@ class LogCallTest {
 
         testService.logCallWithPojoParamsReturningPojo(pojoA)
 
-        with(logWatcher!!) {
+        with(logWatcher) {
             assertThat(list.size).isEqualTo(2)
             assertThat(list[0].level.toString()).isEqualTo("INFO")
             assertThat(list[0].loggerName).isEqualTo(TestServiceX::class.java.name + "-aop")
@@ -139,7 +134,7 @@ class LogCallTest {
            testService.logCallThrowingException()
         }
 
-        with(logWatcher!!) {
+        with(logWatcher) {
             assertThat(list.size).isEqualTo(2)
             assertThat(list[0].level.toString()).isEqualTo("INFO")
             assertThat(list[0].loggerName).isEqualTo(TestServiceX::class.java.name + "-aop")
@@ -151,6 +146,18 @@ class LogCallTest {
         }
     }
 
+    @Test
+    fun testMdcAnnoationsAreIncluded() {
+
+        testService.logIncludingMdc(context = "abc")
+
+        with(logWatcher) {
+            assertThat(list.size).isEqualTo(2)
+            assertThat(list[0].mdcPropertyMap).containsEntry("hedvig.context", "abc")
+
+            assertThat(list[1].mdcPropertyMap).containsEntry("hedvig.context", "abc")
+        }
+    }
 }
 
 
@@ -185,6 +192,10 @@ class TestServiceX {
         throw IllegalArgumentException("Testing")
     }
 
+    @MdcScope
+    @LogCall
+    fun logIncludingMdc(@Mdc context: String) {
+    }
 }
 
 data class PojoA (

@@ -2,7 +2,35 @@
 
 Useful logging utils.
 
-## @Masked
+## `@Mdc` and `@MdcScope`
+
+Functions can be tagged with `@MdcScope`, and its parameters with `@Mdc` in order to populate the
+[SLF4J MDC](http://logback.qos.ch/manual/mdc.html) with data, without having to manually put things in the MDC, and
+remembering to restore it afterwards.
+
+E.g.
+```kotlin
+@MdcScope
+@GetMapping("/books/{bookId}")
+fun getBook(@Mdc @PathVariable bookId: UUID): Book {
+    MDC.get("bookId") // will return whatever is in the bookId parameter
+} // after returning, the MDC will be restored to its prior state
+```
+
+It can also be declared on nested values of types:
+```kotlin
+data class Book(
+    @Mdc val market: String 
+)
+
+@MdcScope
+@PostMapping("/books")
+fun createBook(@RequestBody book: Book) {
+    MDC.get("market") // will return the market value of the Book object
+}
+```
+
+## `@Masked`
 
 To mask out specific fields in data classes or objects, mark the sensitive fields with the `@Masked` annotation and use 
 the `obj.toMaskedString()` extension function. Masked fields will be replaced with `***`.
@@ -27,7 +55,7 @@ Hippi(firstname=Lars, lastname=Svensson, ssn=710502-0296, age=50)
 Hippi(firstname=***, lastname=***, ssn=***, age=50)
 ```
 
-## @LogCall
+## `@LogCall`
 
 Mark methods with the `@LogCall` annotation and get all calls to it to be logged on info level.
 
