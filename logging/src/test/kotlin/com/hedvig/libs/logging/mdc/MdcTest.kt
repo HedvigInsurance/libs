@@ -63,7 +63,7 @@ internal class MdcTest {
     @Test
     fun `test unsupported type`() {
         assertThrows<IllegalArgumentException> {
-            extractMdcProperties(this::misstaggedParameter, arrayOf(Request("1234")))
+            extractMdcProperties(this::mistaggedParameter, arrayOf(Request("1234")))
         }
     }
 
@@ -74,7 +74,7 @@ internal class MdcTest {
     private fun singleMdcAmongNonMdc(age: Int, @Mdc id: UUID, name: String) {}
     private fun singleIntValue(@Mdc age: Int) {}
     private fun singleRequestObject(request: Request) {}
-    private fun misstaggedParameter(@Mdc request: Request) {}
+    private fun mistaggedParameter(@Mdc request: Request) {}
 
     data class Request(
         @Mdc val targetId: String
