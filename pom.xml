@@ -26,7 +26,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Hedvig Maven Packages</name>
-            <url>https://maven.pkg.github.com/HedvigInsurance/libs</url>
+            <url>https://maven.pkg.github.com/HedvigInsurance/shared-libs</url>
         </repository>
     </distributionManagement>
 
