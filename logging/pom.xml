@@ -6,12 +6,12 @@
     <parent>
         <artifactId>libs</artifactId>
         <groupId>com.hedvig.libs</groupId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
 
     <artifactId>logging</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 
     <name>logging</name>
     <description>Shared lib for logging utilities</description>
