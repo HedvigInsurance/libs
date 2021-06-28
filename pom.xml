@@ -45,6 +45,7 @@
 
     <modules>
         <module>logging</module>
+        <module>translations</module>
     </modules>
 
     <build>
