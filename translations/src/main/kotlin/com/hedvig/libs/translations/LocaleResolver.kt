@@ -1,17 +1,17 @@
 package com.hedvig.libs.translations
 
 import org.slf4j.LoggerFactory
-import java.util.*
+import java.util.Locale
 
 object LocaleResolver {
 
-    fun resolveLocale(acceptLanguage: String?): Locale =
-        resolveLocale(acceptLanguage, FALLBACK_LOCALE)!!
+    fun resolve(acceptLanguage: String?): Locale =
+        resolve(acceptLanguage, FALLBACK_LOCALE)!!
 
-    fun resolveNullableLocale(acceptLanguage: String?): Locale? =
-        resolveLocale(acceptLanguage, null)
+    fun resolveNullable(acceptLanguage: String?): Locale? =
+        resolve(acceptLanguage, null)
 
-    private fun resolveLocale(acceptLanguage: String?, defaultLocale: Locale?): Locale? {
+    private fun resolve(acceptLanguage: String?, defaultLocale: Locale?): Locale? {
         if (acceptLanguage.isNullOrBlank()) {
             return defaultLocale
         }
