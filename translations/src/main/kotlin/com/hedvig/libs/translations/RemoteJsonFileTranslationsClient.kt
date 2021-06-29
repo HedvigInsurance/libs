@@ -56,7 +56,7 @@ class RemoteJsonFileTranslationsClient(
         }
     }
 
-    override fun getTranslation(locale: Locale, key: String): String? {
+    override fun getTranslation(key: String, locale: Locale): String? {
         return translationsByLocale[locale.toString()]?.get(key)?.asText()
     }
 }

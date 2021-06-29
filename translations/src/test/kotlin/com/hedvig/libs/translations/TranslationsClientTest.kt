@@ -21,18 +21,18 @@ class TranslationsClientTest {
                 1
             )
 
-        var translation = client.getTranslation(Locale("da", "DK"), "DK_CONTENT_CONVERSATION_SIZE_TOOLTIP_TITLE")
+        var translation = client.getTranslation("DK_CONTENT_CONVERSATION_SIZE_TOOLTIP_TITLE", Locale("da", "DK"))
         assertThat(translation).isEqualTo("Størrelse")
 
-        translation = client.getTranslation(Locale("en", "DK"), "DK_CONTENT_CONVERSATION_SIZE_TOOLTIP_TITLE")
+        translation = client.getTranslation("DK_CONTENT_CONVERSATION_SIZE_TOOLTIP_TITLE", Locale("en", "DK"))
         assertThat(translation).isEqualTo("Size")
 
         // Unsupported text key
-        translation = client.getTranslation(Locale("da", "DK"), "X_WHATEVER_X")
+        translation = client.getTranslation("X_WHATEVER_X", Locale("da", "DK"))
         assertThat(translation).isNull()
 
         // Unsupported locale
-        translation = client.getTranslation(Locale("sv", "DK"), "DK_CONTENT_CONVERSATION_SIZE_TOOLTIP_TITLE")
+        translation = client.getTranslation("DK_CONTENT_CONVERSATION_SIZE_TOOLTIP_TITLE", Locale("sv", "DK"))
         assertThat(translation).isNull()
     }
 
