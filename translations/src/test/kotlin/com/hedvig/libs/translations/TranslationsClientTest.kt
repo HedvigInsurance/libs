@@ -25,7 +25,7 @@ class TranslationsClientTest {
         assertThat(translation).isEqualTo("Størrelse")
 
         translation = client.getTranslation(Locale("en", "DK"), "DK_CONTENT_CONVERSATION_SIZE_TOOLTIP_TITLE")
-        assertThat(translation).isEqualTo("Størrelse")
+        assertThat(translation).isEqualTo("Size")
 
         // Unsupported text key
         translation = client.getTranslation(Locale("da", "DK"), "X_WHATEVER_X")
