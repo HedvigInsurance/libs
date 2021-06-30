@@ -9,10 +9,10 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
 
-class RemoteJsonFileTranslationsClient(
+class RemoteJsonFileTranslations(
     private val url: String = "https://s3.eu-central-1.amazonaws.com/translations.hedvig.com/platform/translations.json",
     refreshRateMinutes: Long = 10
-) : TranslationsClient {
+) : Translations {
 
     private val logger = LoggerFactory.getLogger(javaClass)
     private val objectMapper = ObjectMapper()
@@ -56,7 +56,11 @@ class RemoteJsonFileTranslationsClient(
         }
     }
 
-    override fun getTranslation(key: String, locale: Locale): String? {
-        return translationsByLocale[locale.toString()]?.get(key)?.asText()
+    override fun get(key: String, locale: Locale): String? {
+        val translation = translationsByLocale[locale.toString()]?.get(key)?.asText()
+        if (translation.isNullOrEmpty()) {
+            logger.warn("Missing translation for requested key: $key")
+        }
+        return translation
     }
 }
