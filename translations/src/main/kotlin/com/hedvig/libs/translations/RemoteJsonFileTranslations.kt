@@ -9,6 +9,11 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timerTask
 
+/**
+ * An implementation of [Translations] that is backed by a JSON file fetched from an S3 bucket.
+ *
+ * This file can be configured, but the default is `s3://translations.hedvig.com/platform/translations.json`.
+ */
 class RemoteJsonFileTranslations(
     private val url: String = "https://s3.eu-central-1.amazonaws.com/translations.hedvig.com/platform/translations.json",
     refreshRateMinutes: Long = 10
