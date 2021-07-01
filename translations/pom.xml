@@ -11,7 +11,7 @@
 
     <artifactId>translations</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>translations</name>
     <description>Shared lib for translations</description>

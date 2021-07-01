@@ -64,7 +64,7 @@ class RemoteJsonFileTranslations(
     override fun get(key: String, locale: Locale): String? {
         val translation = translationsByLocale[locale.toString()]?.get(key)?.asText()
         if (translation.isNullOrEmpty()) {
-            logger.warn("Missing translation for requested key: $key")
+            logger.warn("Missing translation for requested key: $key and locale: $locale")
         }
         return translation
     }
