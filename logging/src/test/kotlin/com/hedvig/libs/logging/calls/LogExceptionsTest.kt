@@ -54,10 +54,9 @@ class LogExceptionsTest {
     fun testNoParamsReturningUnit() {
 
         handler.logException(RuntimeException("Test exception"))
-
         with(logWatcher) {
             assertThat(list.size).isEqualTo(1)
-            assertThat(list[0].level.toString()).isEqualTo("ERROR")
+            assertThat(list[0].level.toString()).isEqualTo("WARN")
             assertThat(list[0].message).isEqualTo("Test exception")
             assertThat(list[0].throwableProxy.stackTraceElementProxyArray.size).isGreaterThan(0)
         }

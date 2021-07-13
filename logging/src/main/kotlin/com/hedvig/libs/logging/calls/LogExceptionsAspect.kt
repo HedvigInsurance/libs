@@ -1,10 +1,11 @@
 package com.hedvig.logging.calls
 
 import org.aspectj.lang.JoinPoint
+import org.aspectj.lang.annotation.AfterReturning
 import org.aspectj.lang.annotation.Aspect
-import org.aspectj.lang.annotation.Before
 import org.aspectj.lang.annotation.Pointcut
 import org.slf4j.LoggerFactory
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
 
 /**
@@ -23,17 +24,26 @@ class LogExceptionsAspect {
     fun publicMethod() {
     }
 
-    @Pointcut("publicMethod() && beanAnnotatedWithLogExceptions()")
-    fun publicMethodInsideAClassMarkedWithLogExceptions() {
+    @Pointcut("execution(protected * *(..))")
+    fun protectedMethod() {
     }
 
-    @Before("publicMethodInsideAClassMarkedWithLogExceptions()")
-    fun logException(joinPoint: JoinPoint) {
-        joinPoint.args
-            .filterIsInstance<Throwable>()
-            .forEach {
-                logger.error(it.localizedMessage, it)
+    @Pointcut("(publicMethod() || protectedMethod()) && beanAnnotatedWithLogExceptions()")
+    fun condition() {
+    }
+
+    @AfterReturning(pointcut = "condition()", returning = "returnValue")
+    fun logException(joinPoint: JoinPoint, returnValue: Any?) {
+        val ex = joinPoint.args.filterIsInstance<Throwable>().firstOrNull() ?: return
+        if (returnValue is ResponseEntity<*>) {
+            when {
+                returnValue.statusCode.is5xxServerError -> logger.error(ex.localizedMessage, ex)
+                returnValue.statusCode.is4xxClientError -> logger.info(ex.localizedMessage, ex)
+                else -> logger.warn(ex.localizedMessage, ex)
             }
+        } else {
+            logger.warn(ex.localizedMessage, ex)
+        }
     }
 
     companion object {
