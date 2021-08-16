@@ -28,30 +28,11 @@ class MdcScopeAspect(
         val newContext = joinPoint.extractMdcProperties().mapKeys {
             "$prefix.${it.key}"
         }
-        val existing = pushMdc(newContext)
+        val stack = MdcStack.push(newContext)
         try {
             return joinPoint.proceed()
         } finally {
-            restoreMdc(newContext, existing)
-        }
-    }
-
-    private fun pushMdc(newContext: Map<String, String>): Map<String, String> {
-        val existing = mutableMapOf<String, String>()
-        newContext.forEach { (key, value) ->
-            MDC.get(key)?.let { existing[key] = it }
-            MDC.put(key, value)
-        }
-        return existing
-    }
-
-    private fun restoreMdc(contextToDelete: Map<String, String>, contextToRestore: Map<String, String>) {
-        contextToDelete.forEach { (key, value) ->
-            contextToRestore[key]?.let { restored ->
-                MDC.put(key, restored)
-            } ?: run {
-                MDC.remove(key)
-            }
+            stack.restore()
         }
     }
 }
